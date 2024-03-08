@@ -11,6 +11,7 @@ type ActionResponse =
         contractAddress?: string[];
         tokenId?: string[];
         chainId?: string[];
+        form?: string[];
       };
       transfers?: null;
       owner?: null;
@@ -38,6 +39,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     contractAddress: [] as Array<string>,
     tokenId: [] as Array<string>,
     chainId: [] as Array<string>,
+    form: [] as Array<string>,
   };
 
   if (!chainId) {
@@ -62,9 +64,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ errors }, { status: 400 });
   }
 
-  const transfers = await getTransfers({ contractAddress, tokenId });
-  const owner = await getTokenOwner({ contractAddress, tokenId });
-  return json({ transfers, owner });
+  try {
+    const transfers = await getTransfers({ contractAddress, tokenId });
+    const owner = await getTokenOwner({ contractAddress, tokenId });
+    return json({ transfers, owner });
+  } catch (error) {
+    console.error("Failed to fetch NFT data:", error);
+    return json(
+      { errors: { form: ["Failed to fetch NFT data"] } },
+      { status: 500 }
+    );
+  }
 };
 
 export default function Index() {
@@ -72,6 +82,7 @@ export default function Index() {
   const { errors, transfers, owner } = fetcher.data ?? {};
   return (
     <div className="container p-4 font-sans text-gray-700">
+      <ErrorList errors={errors?.form} />
       <fetcher.Form method="post" className="max-w-md my-10">
         <div className="mb-6">
           <label
