@@ -141,7 +141,7 @@ export default function Index() {
       <div className="container mx-auto my-10">
         {owner && (
           <>
-            <h2 className="text-xl font-semibold my-4">Owner</h2>
+            <h2 className="text-xl font-semibold my-4">Owners</h2>
             <pre className="bg-gray-100 rounded p-4">
               {JSON.stringify(owner, null, 2)}
             </pre>

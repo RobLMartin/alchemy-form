@@ -32,9 +32,12 @@ export const getTransfers = async ({
     );
 
     const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch transfer data");
+    }
     return data.result.transfers;
   } catch (error) {
-    console.error(error);
+    throw new Error("Failed to fetch transfer data");
   }
 };
 
@@ -57,8 +60,11 @@ export const getTokenOwner = async ({
     );
 
     const data = await response.json();
-    return data;
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch owner data");
+    }
+    return data.owners;
   } catch (error) {
-    console.error(error);
+    throw new Error("Failed to fetch owner data");
   }
 };
